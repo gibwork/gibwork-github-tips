@@ -8,6 +8,8 @@ export function parseCommand(message: string): Commands {
   const [prefix, command, ...args] = message.split(' ');
 
   return {
-    prefix, command, args
-  }
+    prefix,
+    command,
+    args,
+  };
 }

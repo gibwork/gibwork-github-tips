@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { run } from './app'
+import { run } from './app';
 
 function init() {
   exec('echo "checking notifications"', async (error, _stdout, stderr) => {
@@ -7,6 +7,7 @@ function init() {
       console.error(`Error: ${error.message}`);
       return;
     }
+
     if (stderr) {
       console.error(`Stderr: ${stderr}`);
       return;
@@ -17,5 +18,7 @@ function init() {
     setTimeout(init, 500);
   });
 }
+
+console.log('Started');
 
 init();

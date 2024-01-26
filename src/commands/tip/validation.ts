@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const TipValidationSchema = z.object({
-  value: z.preprocess((arg) => {
+  amount: z.preprocess((arg) => {
     if (typeof arg === 'string') {
       const parsed = parseFloat(arg);
       if (!Number.isNaN(parsed)) {

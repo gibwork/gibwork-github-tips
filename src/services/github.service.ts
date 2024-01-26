@@ -1,56 +1,125 @@
+import { findFirstMentionReverse } from '../utils/find-first-mention';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const token = process.env.GITHUB_TOKEN
+const token = process.env.GITHUB_TOKEN;
 
 export interface Notification {
   id: string;
+  commentId: number;
   message: string;
-  repo: string;
+  repository: string;
+  owner: string;
   pullId: string;
-  userId: string;
+  username: string;
 }
 
 export async function getNotifications() {
-  const response = await fetch('https://api.github.com/notifications', { headers: { Authorization: `Bearer ${token}` } });
+  const response = await fetch('https://api.github.com/notifications', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   const notifications: any = await response.json();
 
-  const notMentions = notifications.filter((notification: any) => notification.reason !== 'mention');
+  const notMentions = notifications.filter(
+    (notification: any) => notification.reason !== 'mention',
+  );
 
   for (const notification of notMentions) {
     await setNotificationRead(notification.id);
   }
 
-  const mentions = notifications.filter((notification: any) => notification.reason === 'mention');
+  const mentions = notifications.filter(
+    (notification: any) => notification.reason === 'mention',
+  );
 
   const notification: Notification[] = [];
 
-  for(const mention of mentions) {
-    const response = await fetch(mention.subject.latest_comment_url, { headers: { Authorization: `Bearer ${token}` } });
-    const data: any = await response.json();
+  for (const mention of mentions) {
+    const pullId = mention.subject.url.split('/').pop();
+    const repository = mention.repository.full_name?.split('/')[1];
+    const owner = mention.repository.full_name?.split('/')[0];
+
+    const message = await getMessage(
+      mention.subject.latest_comment_url,
+      pullId,
+      repository,
+      owner,
+    );
 
     notification.push({
       id: mention.id,
-      message: data.body,
-      userId: data.user.id,
-      pullId: mention.subject.url.split('/').pop(),
-      repo: mention.repository.full_name
-    })
+      commentId: message.id,
+      message: message.body,
+      username: message.user.login,
+      pullId,
+      repository,
+      owner,
+    });
   }
 
   return notification;
 }
 
+async function getMessage(
+  latest_comment_url: string,
+  pullId: string,
+  repo: string,
+  owner: string,
+): Promise<any> {
+  const response = await fetch(latest_comment_url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data: any = await response.json();
+
+  if (!/@\w+/g.test(data.body)) {
+    const response = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/issues/${pullId}/comments?sort=created&direction=desc`,
+      { method: 'GET', headers: { Authorization: `Bearer ${token}` } },
+    );
+
+    const linkHeader = response.headers
+      .get('link')
+      ?.split(',')
+      .find((link: string) => link.includes('rel="last"'));
+
+    const match = linkHeader?.match(/<(.+?)>/);
+    if (match) {
+      const url = match[1];
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data: any = await response.json();
+      const message = findFirstMentionReverse(data);
+
+      return message;
+    } else {
+      console.log('Link was not found');
+    }
+  }
+
+  return data;
+}
 
 export async function setNotificationRead(notificationId: string) {
-  await fetch(`https://api.github.com/notifications/threads/${notificationId}`, { method: 'PATCH', headers: { Authorization: `Bearer ${token}` } });
+  await fetch(
+    `https://api.github.com/notifications/threads/${notificationId}`,
+    { method: 'PATCH', headers: { Authorization: `Bearer ${token}` } },
+  );
 }
 
-export async function answerPullRequest(pullId: string, repo: string, message: string) {
-  await fetch(`https://api.github.com/repos/${repo}/issues/${pullId}/comments`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: JSON.stringify({ body: message }) });
-}
-
-export async function getUserInfo(username: string): Promise<any> {
-  const response = await fetch(`https://api.github.com/users/${username}`);
-  return await response.json();
+export async function answerPullRequest(
+  pullId: string,
+  repo: string,
+  owner: string,
+  message: string,
+) {
+  await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/issues/${pullId}/comments`,
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ body: message }),
+    },
+  );
 }
