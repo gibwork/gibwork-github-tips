@@ -123,3 +123,13 @@ export async function answerPullRequest(
     },
   );
 }
+
+export async function getContributors(repo: string, owner: string) {
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contributors`,
+    { method: 'GET', headers: { Authorization: `Bearer ${token}` } },
+  );
+  const contributors: any = await response.json();
+
+  return contributors;
+}

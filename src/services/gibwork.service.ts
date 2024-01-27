@@ -25,5 +25,7 @@ export async function tip(data: GibWorkTip): Promise<GibWorkTipResponse> {
     body: JSON.stringify(data),
   });
 
-  return (await response.json()) as GibWorkTipResponse;
+  const gibdata = await response.json();
+
+  return gibdata as GibWorkTipResponse;
 }
