@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { exec } from 'child_process';
 import { run } from './app';
 
@@ -15,7 +18,7 @@ function init() {
 
     await run();
 
-    setTimeout(init, 500);
+    setTimeout(init, Number(process.env.DELAY_VERIFICATION || 5000));
   });
 }
 

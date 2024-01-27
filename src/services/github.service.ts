@@ -1,6 +1,4 @@
 import { findFirstMentionReverse } from '../utils/find-first-mention';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const token = process.env.GITHUB_TOKEN;
 

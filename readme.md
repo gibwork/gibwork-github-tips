@@ -37,3 +37,10 @@ yarn build
 yarn start
 ```
 
+
+## Github Dependency
+
+The GitHub API imposes a default rate limit of 5000 requests per hour. If the bot 
+is set to check notifications every 5 seconds (the default delay), it will operate 
+well within this limit. However, setting the delay too short could result in 
+exceeding the rate limit.
