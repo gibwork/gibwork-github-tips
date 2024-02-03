@@ -1,4 +1,4 @@
-export function findFirstMentionAndCommandReverse(arr) {
+export function findFirstMentionReverse(arr) {
   // Regex to match "@username tip amount @recipient" pattern
   const commandRegex = /@(\w+)\s+tip\s+(\d+)\s+@(\w+)/;
 
