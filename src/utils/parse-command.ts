@@ -7,7 +7,6 @@ export interface Commands {
 }
 
 export function parseCommand(message: string): Commands {
-  console.log(COMMAND_PREFIX);
   if (message.includes(COMMAND_PREFIX)) {
     const start = message.indexOf(COMMAND_PREFIX) + COMMAND_PREFIX.length;
     const commandString = message.slice(start).trim();
