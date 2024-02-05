@@ -1,15 +1,15 @@
-export interface Commands {
-  prefix: string;
-  command: string;
-  args: string[];
-}
+export function parseCommand(message: string): Commands {{
+  const commandRegex = /(@gibworkbot tip) (\d+) (@\w+)/;
+  const match = message.match(commandRegex);
 
-export function parseCommand(message: string): Commands {
-  const [prefix, command, ...args] = message.split(' ');
+  if (match) {{
+    const [ , command, ...args ] = match;
+    return {{
+      prefix: '@gibworkbot',
+      command,
+      args,
+    }};
+  }}
 
-  return {
-    prefix,
-    command,
-    args,
-  };
-}
+  throw new Error('Command not found in message');
+}}
