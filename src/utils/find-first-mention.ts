@@ -1,6 +1,6 @@
 export function findFirstMentionReverse(arr: any[]) {
   // Regex to match "@username tip amount @recipient" pattern
-  const commandRegex = /@(\w+)\s+tip\s+(\d+)\s+@(\w+)/;
+  const commandRegex = /(@gibworkbot)\s*tip\s*(\d+)\s*(@\w+)/;
 
   for (let i = arr.length - 1; i >= 0; i--) {
     try {
