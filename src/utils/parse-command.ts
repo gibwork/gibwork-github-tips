@@ -1,3 +1,5 @@
+import { COMMAND_PREFIX } from '../config';
+
 export interface Commands {
   prefix: string;
   command: string;
@@ -5,11 +7,21 @@ export interface Commands {
 }
 
 export function parseCommand(message: string): Commands {
-  const [prefix, command, ...args] = message.split(' ');
+  if (message.includes(COMMAND_PREFIX)) {
+    const start = message.indexOf(COMMAND_PREFIX) + COMMAND_PREFIX.length;
+    const commandString = message.slice(start).trim();
+    const [command, ...args] = commandString.split(/\s+/);
 
-  return {
-    prefix,
-    command,
-    args,
-  };
+    return {
+      prefix: COMMAND_PREFIX,
+      command,
+      args,
+    };
+  } else {
+    return {
+      prefix: '',
+      command: '',
+      args: [],
+    };
+  }
 }
