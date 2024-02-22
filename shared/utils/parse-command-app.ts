@@ -5,14 +5,14 @@ export interface Commands {
 
 export function parseCommand(message: string): Commands {
   // Split the message by spaces
-  const [prefix, ...args] = message.split(" ");
+  const [prefix, ...args] = message.split(' ');
 
-  console.log("prefix", prefix);
+  console.log('prefix', prefix);
 
   // Check if the prefix starts with '@' and the command is 'tip'
-  if (prefix.toLowerCase() === "/tip") {
+  if (prefix.toLowerCase() === '/tip') {
     // Extract the username to be tipped
-    const tipRecipient = args.find((arg) => arg.startsWith("@")) as string;
+    const tipRecipient = args.find((arg) => arg.startsWith('@')) as string;
     const tipIndex = args.indexOf(tipRecipient);
 
     // Extract the amount to be tipped

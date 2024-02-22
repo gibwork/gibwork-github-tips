@@ -1,34 +1,4 @@
-interface GibWorkTip {
-  owner: string;
-  repository: string;
-  commentId: number;
-  fromGithubUser: string;
-  toGithubUser: string;
-  message: string;
-  tip: {
-    token: string;
-    amount: number;
-  };
-}
-
-interface GibWorkTipResponse {
-  tipHtmlUrl: string;
-  message: string;
-}
-
-export async function tip(data: GibWorkTip): Promise<GibWorkTipResponse> {
-  const response = await fetch(`${process.env.GIBWORK_API}/tip`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  const gibdata = await response.json();
-
-  return gibdata as GibWorkTipResponse;
-}
+import { tip } from '../../../shared/services/gibwork.service';
 
 export interface TipCommand {
   issueId?: number;
@@ -53,13 +23,13 @@ export async function tipCommand({
   fromGithubUser,
   message,
 }: TipCommand) {
-  console.log("toGithubUser", toGithubUser);
-  console.log("fromGithubUser", fromGithubUser);
+  console.log('toGithubUser', toGithubUser);
+  console.log('fromGithubUser', fromGithubUser);
   if (!toGithubUser) {
-    console.error("Invalid input: user not found");
-    console.log("issuesID,pullID", issueId, pullId);
+    console.error('Invalid input: user not found');
+    console.log('issuesID,pullID', issueId, pullId);
 
-    return { tipHtmlUrl: "", message: "Invalid input: user not found" };
+    return { tipHtmlUrl: '', message: 'Invalid input: user not found' };
   }
 
   const url = await tip({
@@ -70,7 +40,7 @@ export async function tipCommand({
     repository,
     owner,
     tip: {
-      token: "USDC",
+      token: 'USDC',
       amount: amount,
     },
   });

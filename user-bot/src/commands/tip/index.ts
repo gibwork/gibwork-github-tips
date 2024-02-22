@@ -1,5 +1,5 @@
-import * as gibworkService from '../../services/gibwork.service';
-import * as githubService from '../../services/github.service';
+import * as gibworkService from '../../../../shared/services/gibwork.service';
+import * as githubService from '../../../../shared/services/github.service';
 
 export interface TipCommand {
   notificationId: string;
@@ -37,26 +37,18 @@ export async function tipCommand({
     return;
   }
 
-  // const contributors = await githubService.getContributors(repository, owner);
-  // if (!contributors.find((user: any) => user.login === fromGithubUser)) {
-  //   await githubService.answerPullRequest(
-  //     pullId,
-  //     repository,
-  //     owner,
-  //     `Make sure you are a contributor to this repository.`,
-  //   );
-  //   await githubService.setNotificationRead(notificationId);
-
-  //   return;
-  // }
-
+  const contributors = await githubService.getContributors(repository, owner);
   const collaborators = await githubService.getCollaborators(repository, owner);
-  if (!collaborators.find((user: any) => user.login === toGithubUser)) {
+
+  if (
+    !contributors.find((user: any) => user.login === fromGithubUser) &&
+    !collaborators.find((user: any) => user.login === fromGithubUser)
+  ) {
     await githubService.answerPullRequest(
       pullId,
       repository,
       owner,
-      `Make sure the user you are tipping is a collaborator to this repository.`,
+      `Make sure you are a contributor to this repository.`,
     );
     await githubService.setNotificationRead(notificationId);
 
@@ -77,14 +69,9 @@ export async function tipCommand({
   });
 
   if (!url) {
-    throw new Error('Error tipping user');
-  } else {
-    await githubService.answerPullRequest(
-      pullId,
-      repository,
-      owner,
-      url.message,
-    );
-    await githubService.setNotificationRead(notificationId);
+    return;
   }
+
+  await githubService.answerPullRequest(pullId, repository, owner, url.message);
+  await githubService.setNotificationRead(notificationId);
 }

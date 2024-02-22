@@ -1,8 +1,8 @@
-import { getNotifications } from './services/github.service';
-import { parseCommand } from './utils/parse-command';
-import { COMMANDS } from './config';
-import { TipValidationSchema } from './commands/tip/validation';
+import { getNotifications } from '../../shared/services/github.service';
 import { tipCommand } from './commands/tip';
+import { TipValidationSchema } from '../../shared/utils/tip-amount-validation';
+import { parseCommand } from '../../shared/utils/parse-command-bot';
+import { COMMANDS } from '../../shared/config';
 
 export async function run() {
   const notifications = await getNotifications();
@@ -12,7 +12,6 @@ export async function run() {
 
   for (const notification of notifications) {
     const command = parseCommand(notification.message);
-    console.log(command);
 
     switch (command.command) {
       case COMMANDS.TIP:

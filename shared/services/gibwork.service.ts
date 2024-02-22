@@ -11,7 +11,7 @@ interface GibWorkTip {
   };
 }
 
-interface GibWorkTipResponse {
+export interface GibWorkTipResponse {
   tipHtmlUrl: string;
   message: string;
 }
@@ -32,7 +32,6 @@ export async function tip(
 
     return gibdata as GibWorkTipResponse;
   } catch (error) {
-    console.log('Error', error);
-    return null;
+    throw new Error(`Error: ${(error as Error).message}`);
   }
 }

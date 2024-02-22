@@ -1,0 +1,17 @@
+{
+  "watch": [
+    "user-bot",
+    "github-app",
+    "shared"
+  ],
+  "ext": ".ts,.js",
+  "ignore": [
+    "**/node_modules/**"
+  ],
+  "verbose": true,
+  "restartable": "rs",
+  "events": {
+    "restart": "echo 'Restarted the server'"
+  },
+  "script": "npm run start:{{project}}"
+}
