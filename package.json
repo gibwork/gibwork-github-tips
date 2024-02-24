@@ -10,6 +10,8 @@
     "start:github-app": "probot run ./lib/github-app/src/index.js"
   },
   "dependencies": {
+    "@types/node-cron": "^3.0.11",
+    "node-cron": "^3.0.3",
     "probot": "^13.0.2",
     "zod": "^3.22.4"
   },

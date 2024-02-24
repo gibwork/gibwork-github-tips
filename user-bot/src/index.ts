@@ -1,27 +1,21 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { exec } from 'child_process';
+import cron from 'node-cron';
 import { run } from './app';
-
-function init() {
-  exec('echo "checking notifications"', async (error, _stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${error.message}`);
-      return;
-    }
-
-    if (stderr) {
-      console.error(`Stderr: ${stderr}`);
-      return;
-    }
-
-    await run();
-
-    setTimeout(init, Number(process.env.DELAY_VERIFICATION || 5000));
-  });
-}
+import { millisecondsToExtendedCron } from '../../shared/utils/milisecond-to-cron';
 
 console.log('Started');
 
-init();
+const cronExpression = millisecondsToExtendedCron(
+  Number(process.env.DELAY_VERIFICATION || 5000),
+);
+
+cron.schedule(cronExpression, async () => {
+  try {
+    await run();
+  } catch (error) {
+    console.log('Error running cron job');
+    console.log(error);
+  }
+});
