@@ -3,7 +3,7 @@ dotenv.config();
 
 import cron from 'node-cron';
 import { run } from './app';
-import { millisecondsToExtendedCron } from './utils/millisecond-to-cron';
+import { millisecondsToExtendedCron } from '../../shared/utils/milisecond-to-cron';
 
 console.log('Started');
 

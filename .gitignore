@@ -1,7 +1,5 @@
+lib
 dist
-.env
 node_modules
-
-.idea
-
-yarn-error.log
+node_modules
+.env

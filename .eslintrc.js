@@ -22,12 +22,10 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
   },
-  overrides: [
+  'prettier/prettier': [
+    'error',
     {
-      files: ['*.ts'],
-      parserOptions: {
-        project: ['./tsconfig.json']
-      },
-    }
-  ]
+      endOfLine: 'auto',
+    },
+  ],
 };

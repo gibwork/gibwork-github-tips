@@ -1,5 +1,5 @@
-import * as gibworkService from '../../services/gibwork.service';
-import * as githubService from '../../services/github.service';
+import * as gibworkService from '../../../../shared/services/gibwork.service';
+import * as githubService from '../../../../shared/services/github.service';
 
 export interface TipCommand {
   notificationId: string;
@@ -38,8 +38,12 @@ export async function tipCommand({
   }
 
   const contributors = await githubService.getContributors(repository, owner);
+  const collaborators = await githubService.getCollaborators(repository, owner);
 
-  if (!contributors.find((user: any) => user.login === fromGithubUser)) {
+  if (
+    !contributors.find((user: any) => user.login === fromGithubUser) &&
+    !collaborators.find((user: any) => user.login === fromGithubUser)
+  ) {
     await githubService.answerPullRequest(
       pullId,
       repository,
@@ -63,6 +67,10 @@ export async function tipCommand({
       amount: amount,
     },
   });
+
+  if (!url) {
+    return;
+  }
 
   await githubService.answerPullRequest(pullId, repository, owner, url.message);
   await githubService.setNotificationRead(notificationId);

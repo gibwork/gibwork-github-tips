@@ -131,3 +131,13 @@ export async function getContributors(repo: string, owner: string) {
 
   return contributors;
 }
+
+export async function getCollaborators(repo: string, owner: string) {
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/collaborators`,
+    { method: 'GET', headers: { Authorization: `Bearer ${token}` } },
+  );
+  const collaborators: any = await response.json();
+
+  return collaborators;
+}
